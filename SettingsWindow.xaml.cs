@@ -20,6 +20,7 @@ namespace NetGraph
         private PixelPoint GraphPosition { get; set; }
         private NetworkInterface[] Interfaces { get; set; }
         private GraphWindow graphWindow { get; set; }
+        private readonly string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"settings.config");
 
         public SettingsWindow()
         {
@@ -31,7 +32,7 @@ namespace NetGraph
                 .Where(i => i.OperationalStatus == OperationalStatus.Up).ToArray();
                 var env = AppDomain.CurrentDomain.BaseDirectory;
 
-            Settings = File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"settings.config"))
+            Settings = File.ReadAllLines(settingsPath)
                 .ToDictionary(
                     s => s.Substring(0, s.IndexOf(':')),
                     s => s.Substring(s.IndexOf(':') + 1));
@@ -57,7 +58,7 @@ namespace NetGraph
             Settings["CurrentNetwork"] = Interfaces[CurrentNetwork].Id;
             Settings["SentMax"] = SentMax.ToString();
             Settings["ReceivedMax"] = ReceivedMax.ToString();
-            File.WriteAllLines("settings.config", Settings.Select(s => s.Key + ":" + s.Value));
+            File.WriteAllLines(settingsPath, Settings.Select(s => s.Key + ":" + s.Value));
 
             var stat = Interfaces[CurrentNetwork].GetIPv4Statistics();
             graphWindow?.Close();
@@ -83,7 +84,7 @@ namespace NetGraph
         {
             Settings["X"] = e.Point.X.ToString();
             Settings["Y"] = e.Point.Y.ToString();
-            File.WriteAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"settings.config"), Settings.Select(s => s.Key + ":" + s.Value));
+            File.WriteAllLines(settingsPath, Settings.Select(s => s.Key + ":" + s.Value));
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
