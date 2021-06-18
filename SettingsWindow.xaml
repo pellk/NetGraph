@@ -23,6 +23,6 @@
             <Button Click="OkButton_Click" Width="60" Margin="2">OK</Button>
             <Button Click="QuitButton_Click" Width="60" Margin="2">Quit</Button>
         </WrapPanel>
-        <TextBlock Grid.Row="4" Text="© 2020, nuell" FontSize="15"/>
+        <TextBlock Grid.Row="4" Text="© 2021, nuell" FontSize="15"/>
     </Grid>
     </Window>

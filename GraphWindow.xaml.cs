@@ -1,32 +1,33 @@
+using System;
+using System.Collections.ObjectModel;
+using System.Net.NetworkInformation;
+
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Net.NetworkInformation;
 
 namespace NetGraph
 {
     public struct Traffic
     {
-        public long Sent { get; set; }
-        public long Received { get; set; }
+        public double Sent { get; set; }
+        public double Received { get; set; }
+        public double Overlap => Math.Min(Sent, Received);
     }
     public class GraphWindow : Window
     {
+        private const double MiB = 8.0 /* mB to MB */ / 0x10_00_00 /* MB */ * 25.0 /* window height */;
+        private const int Period = 25;
         private bool Dragging { get; set; }
-        private int period = 25;
+        private DispatcherTimer Timer;
+        private ObservableCollection<Traffic> Traffic { get; set; }
+
         public int SentMax { get; set; }
         public int ReceivedMax { get; set; }
-        public Traffic LastTraffic { get; set; }
-        private ObservableCollection<Traffic> Traffic { get; set; }
+        public (long Sent, long Received) LastTraffic { get; set; }
         public NetworkInterface Network { get; set; }
-        public DispatcherTimer timer;
 
         public GraphWindow()
         {
@@ -34,13 +35,13 @@ namespace NetGraph
 
             Traffic = new ObservableCollection<Traffic>();
 
-            timer = new DispatcherTimer
+            Timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
-            timer.Tick += Timer_Tick;
+            Timer.Tick += Timer_Tick;
             Traffic.Clear();
-            timer.Start();
+            Timer.Start();
 
             this.DataContext = this;
         }
@@ -55,15 +56,11 @@ namespace NetGraph
             var stat = Network.GetIPv4Statistics();
             Traffic.Add(new Traffic
             {
-                Sent = stat.BytesSent - LastTraffic.Sent,
-                Received = stat.BytesReceived - LastTraffic.Received
+                Sent = (stat.BytesSent - LastTraffic.Sent) / SentMax * MiB,
+                Received = (stat.BytesReceived - LastTraffic.Received) / ReceivedMax * MiB,
             });
-            LastTraffic = new Traffic
-            {
-                Sent = stat.BytesSent,
-                Received = stat.BytesReceived
-            };
-            if (Traffic.Count > period)
+            LastTraffic = (Sent: stat.BytesSent, Received: stat.BytesReceived);
+            if (Traffic.Count > Period)
                 Traffic.RemoveAt(0);
         }
 
@@ -89,17 +86,6 @@ namespace NetGraph
                 var p = e.GetPosition(this);
                 Position = new PixelPoint(Position.X + (int)p.X, Position.Y + (int)p.Y);
             }
-        }
-    }
-
-    public class MegabyteConverter : IMultiValueConverter
-    {
-        public object Convert(IList<object> value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value[0] is long && value[1] is int)
-                return System.Convert.ToDouble(value[0]) / (System.Convert.ToDouble(value[1]) / 8.0 * 1048576) * 25.0;
-            else
-                return 0;
         }
     }
 }

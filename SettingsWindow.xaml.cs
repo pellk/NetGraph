@@ -1,13 +1,14 @@
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
 
 namespace NetGraph
 {
@@ -19,26 +20,27 @@ namespace NetGraph
         private int CurrentNetwork { get; set; }
         private PixelPoint GraphPosition { get; set; }
         private NetworkInterface[] Interfaces { get; set; }
-        private GraphWindow graphWindow { get; set; }
-        private readonly string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"settings.config");
+        private GraphWindow GraphWindow { get; set; }
+        private readonly string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings.config");
 
         public SettingsWindow()
         {
             InitializeComponent();
 
-            if (!NetworkInterface.GetIsNetworkAvailable())
-                throw new NetworkInformationException();
-            Interfaces = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(i => i.OperationalStatus == OperationalStatus.Up).ToArray();
-                var env = AppDomain.CurrentDomain.BaseDirectory;
-
             Settings = File.ReadAllLines(settingsPath)
                 .ToDictionary(
                     s => s.Substring(0, s.IndexOf(':')),
-                    s => s.Substring(s.IndexOf(':') + 1));
+                    s => s[(s.IndexOf(':') + 1)..]);
 
             SentMax = int.Parse(Settings["SentMax"]);
             ReceivedMax = int.Parse(Settings["ReceivedMax"]);
+
+            if (!NetworkInterface.GetIsNetworkAvailable())
+                throw new NetworkInformationException();
+
+            Interfaces = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(i => i.OperationalStatus == OperationalStatus.Up).ToArray();
+
             CurrentNetwork = 0;
             for (int i = 0; i < Interfaces.Length; i++)
                 if (Interfaces[i].Id == Settings["CurrentNetwork"])
@@ -61,17 +63,17 @@ namespace NetGraph
             File.WriteAllLines(settingsPath, Settings.Select(s => s.Key + ":" + s.Value));
 
             var stat = Interfaces[CurrentNetwork].GetIPv4Statistics();
-            graphWindow?.Close();
-            graphWindow = new GraphWindow
+            GraphWindow?.Close();
+            GraphWindow = new GraphWindow
             {
-                LastTraffic = new Traffic { Sent = stat.BytesSent, Received = stat.BytesReceived },
+                LastTraffic = (Sent: stat.BytesSent, Received: stat.BytesReceived),
                 Network = Interfaces[CurrentNetwork],
                 SentMax = SentMax,
                 ReceivedMax = ReceivedMax
             };
-            graphWindow.PositionChanged += Graph_PositionChanged;
-            graphWindow.Show();
-            graphWindow.Position = GraphPosition;
+            GraphWindow.PositionChanged += Graph_PositionChanged;
+            GraphWindow.Show();
+            GraphWindow.Position = GraphPosition;
             WindowState = WindowState.Minimized;
         }
 
@@ -89,7 +91,7 @@ namespace NetGraph
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            graphWindow?.Close();
+            GraphWindow?.Close();
         }
     }
 }

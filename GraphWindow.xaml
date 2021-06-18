@@ -3,14 +3,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:NetGraph" mc:Ignorable="d"
-    Title="Overlay Timer" SizeToContent="WidthAndHeight" Topmost="True" Background="Transparent" 
-    WindowStartupLocation="CenterScreen" HasSystemDecorations="False" ShowInTaskbar="False" 
-    PointerPressed="Window_PointerPressed" PointerReleased="Window_PointerReleased" PointerMoved="Window_PointerMoved">
+    xmlns:local="clr-namespace:NetGraph" mc:Ignorable="d" Title="Overlay Timer" SizeToContent="WidthAndHeight" Topmost="True" Background="Transparent" TransparencyLevelHint="Transparent" WindowStartupLocation="CenterScreen" HasSystemDecorations="False" ShowInTaskbar="False" PointerPressed="Window_PointerPressed" PointerReleased="Window_PointerReleased" PointerMoved="Window_PointerMoved">
     <Window.Resources>
         <local:MegabyteConverter x:Key="MegabyteConverter" />
     </Window.Resources>
-    <Border Background="#99000000" Grid.Row="1" Height="25" Width="25" BorderBrush="#DD555555" BorderThickness="1" CornerRadius="3">
+    <Border Background="#BB000000" Grid.Row="1" Height="25" Width="25" BorderBrush="#99555555" BorderThickness="1" CornerRadius="2">
         <ItemsControl Items="{Binding Traffic}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -20,22 +17,9 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid Width="1">
-                        <Border Background="#CCFF0000" VerticalAlignment="Bottom">
-                            <Border.Height>
-                                <MultiBinding Converter="{StaticResource MegabyteConverter}">
-                                    <Binding Path="Received"/>
-                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" Path="DataContext.ReceivedMax"/>
-                                </MultiBinding>
-                            </Border.Height>
-                        </Border>
-                        <Border Background="#CC00FF00" VerticalAlignment="Bottom">
-                            <Border.Height>
-                                <MultiBinding Converter="{StaticResource MegabyteConverter}">
-                                    <Binding Path="Sent"/>
-                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" Path="DataContext.SentMax"/>
-                                </MultiBinding>
-                            </Border.Height>
-                        </Border>
+                        <Border Background="#D50000" VerticalAlignment="Bottom" Height="{Binding Received}"/>
+                        <Border Background="#388E3C" VerticalAlignment="Bottom" Height="{Binding Sent}"/>
+                        <Border Background="#FFC400" VerticalAlignment="Bottom" Height="{Binding Overlap}"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
