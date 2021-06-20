@@ -25,7 +25,7 @@ namespace NetGraph
         private const int Period = 25;
         private bool Dragging { get; set; }
         private DispatcherTimer Timer;
-        private ObservableQueue<Traffic> Traffic { get; set; }
+        private ObservableCollection<Traffic> Traffic { get; set; } = new();
 
         public int SentMax { get; set; }
         public int ReceivedMax { get; set; }
@@ -35,8 +35,6 @@ namespace NetGraph
         public GraphWindow()
         {
             InitializeComponent();
-
-            Traffic = new ObservableQueue<Traffic>(Period);
 
             Timer = new DispatcherTimer
             {
@@ -59,7 +57,7 @@ namespace NetGraph
             var stat = Network.GetIPv4Statistics();
             double sent = (stat.BytesSent - LastTraffic.Sent) / SentMax * MiB;
             double received = (stat.BytesReceived - LastTraffic.Received) / ReceivedMax * MiB;
-            Traffic.Enqueue(new Traffic
+            Traffic.Add(new Traffic
             {
                 Overlap = Math.Min(sent, received),
                 Difference = Math.Abs(sent - received),
@@ -67,7 +65,7 @@ namespace NetGraph
             });
             LastTraffic = (Sent: stat.BytesSent, Received: stat.BytesReceived);
             if (Traffic.Count >= Period)
-                Traffic.Dequeue();
+                Traffic.RemoveAt(0);
         }
 
         private void Window_PointerPressed(object sender, PointerPressedEventArgs e)
