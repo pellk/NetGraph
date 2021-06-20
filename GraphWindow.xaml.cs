@@ -6,18 +6,21 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Threading;
 
 namespace NetGraph
 {
     public struct Traffic
     {
-        public double Sent { get; set; }
-        public double Received { get; set; }
-        public double Overlap => Math.Min(Sent, Received);
+        public double Overlap { get; set; }
+        public double Difference { get; set; }
+        public SolidColorBrush DifferenceColour { get; set; }
     }
     public class GraphWindow : Window
     {
+        public readonly SolidColorBrush ReceivedColour = new(Color.FromRgb(213, 0, 0));
+        public readonly SolidColorBrush SentColour = new(Color.FromRgb(104, 159, 56));
         private const double MiB = 8.0 /* mB to MB */ / 0x10_00_00 /* MB */ * 25.0 /* window height */;
         private const int Period = 25;
         private bool Dragging { get; set; }
@@ -54,10 +57,13 @@ namespace NetGraph
         private void Timer_Tick(object sender, EventArgs e)
         {
             var stat = Network.GetIPv4Statistics();
+            double sent = (stat.BytesSent - LastTraffic.Sent) / SentMax * MiB;
+            double received = (stat.BytesReceived - LastTraffic.Received) / ReceivedMax * MiB;
             Traffic.Add(new Traffic
             {
-                Sent = (stat.BytesSent - LastTraffic.Sent) / SentMax * MiB,
-                Received = (stat.BytesReceived - LastTraffic.Received) / ReceivedMax * MiB,
+                Overlap = Math.Min(sent, received),
+                Difference = Math.Abs(sent - received),
+                DifferenceColour = sent > received ? SentColour : ReceivedColour,
             });
             LastTraffic = (Sent: stat.BytesSent, Received: stat.BytesReceived);
             if (Traffic.Count > Period)

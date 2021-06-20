@@ -13,11 +13,10 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid Width="1">
-                        <Border Background="#D50000" VerticalAlignment="Bottom" Height="{Binding Received}"/>
-                        <Border Background="#388E3C" VerticalAlignment="Bottom" Height="{Binding Sent}"/>
-                        <Border Background="#FFC400" VerticalAlignment="Bottom" Height="{Binding Overlap}"/>
-                    </Grid>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Width="1">
+                        <Border Height="{Binding Difference}" Background="{Binding DifferenceColour}" />
+                        <Border Height="{Binding Overlap}" Background="#FFC400" />
+                    </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
