@@ -26,8 +26,8 @@ namespace NetGraph
       private DispatcherTimer Timer;
       private ObservableCollection<Traffic> Traffic { get; set; } = new();
 
-      public int SentMax { get; set; }
-      public int ReceivedMax { get; set; }
+      public double SentMax { get; set; }
+      public double ReceivedMax { get; set; }
       public (long Sent, long Received) LastTraffic { get; set; }
       public NetworkInterface Network { get; set; }
 

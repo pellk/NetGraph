@@ -9,8 +9,8 @@ namespace NetGraph
 {
    public class SettingsWindow : Window
    {
-      private int SentMax { get; set; }
-      private int ReceivedMax { get; set; }
+      private double SentMax { get; set; }
+      private double ReceivedMax { get; set; }
       private int CurrentNetwork { get; set; }
       private NetworkInterface[] Interfaces { get; set; }
       private GraphWindow GraphWindow { get; set; }
