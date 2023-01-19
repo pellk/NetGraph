@@ -38,7 +38,7 @@ public class Settings
          }
       }
       Position = new PixelPoint(x, y);
-      LoadRouterData();
+      RouterStatus.SetSpeedSetting();
    }
 
    public static void Save()
@@ -50,30 +50,5 @@ public class Settings
       lines.Add($"X{EqualChar}{Position.X}");
       lines.Add($"Y{EqualChar}{Position.Y}");
       File.WriteAllLines(settingsPath, lines);
-   }
-
-   private static void LoadRouterData()
-   {
-      const string AuthorizationHeader = $"Basic YWRtaW46YWRtaW4=";
-      // const snr = /(?:SNR Margin Down Stream\s<\/td>\s<td class='form_label_col'>\s)(\d+(?:\.\d+))/gm;
-      var downStreamReg = new Regex(@"(?:Down Stream\s<\/td>\s<td class='form_label_col'>\s)(\d+)(?: kbps)", RegexOptions.Multiline);
-      var upStreamReg = new Regex(@"(?:Up Stream\s<\/td>\s<td class='form_label_col'>\s)(\d+)(?: kbps)", RegexOptions.Multiline);
-
-      using var msg = new HttpRequestMessage(HttpMethod.Get, "http://192.168.1.1/adslconfig.htm");
-      msg.Headers.Add("Authorization", AuthorizationHeader);
-      using var client = new HttpClient();
-      using var response = client.Send(msg);
-      if (!response.IsSuccessStatusCode) return;
-      using var content = response.Content;
-      string str = content.ReadAsStringAsync().Result;
-
-      if (int.TryParse(downStreamReg.Match(str).Groups[1].Value, out int downStream))
-      {
-         ReceivedMax = Math.Round(downStream / 1024.0, 1);
-      };
-      if (int.TryParse(upStreamReg.Match(str).Groups[1].Value, out int upStream))
-      {
-         SentMax = Math.Round(upStream / 1024.0, 1);
-      };
    }
 }
