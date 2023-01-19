@@ -1,13 +1,14 @@
 ﻿using Avalonia;
 
-namespace NetGraph
-{
-    class Program
-    {
-        public static void Main(string[] args) => BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+namespace NetGraph;
 
-        public static AppBuilder BuildAvaloniaApp()
-            => AppBuilder.Configure<App>().UsePlatformDetect();
-    }
+class Program
+{
+   public static void Main(string[] args) => BuildAvaloniaApp()
+       .StartWithClassicDesktopLifetime(args);
+
+   public static AppBuilder BuildAvaloniaApp()
+       => AppBuilder.Configure<App>()
+           .UsePlatformDetect()
+           .LogToTrace();
 }
