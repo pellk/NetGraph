@@ -21,7 +21,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock Text="{Binding ReceivedMax}" FontSize="8" Foreground="#AAFFFFFF"></TextBlock>
+            <TextBlock Text="{Binding ReceivedMax}" FontSize="8" Foreground="#AAFFFFFF" Margin="1,0"></TextBlock>
         </Grid>
     </Border>
 </Window>

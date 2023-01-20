@@ -12,7 +12,7 @@ namespace NetGraph;
 
 public partial class GraphWindow : Window, INotifyPropertyChanged
 {
-   public event PropertyChangedEventHandler PropertyChanged;
+   public new event PropertyChangedEventHandler PropertyChanged;
    public readonly SolidColorBrush ReceivedColour = new(Color.FromRgb(213, 0, 0));
    public readonly SolidColorBrush SentColour = new(Color.FromRgb(104, 159, 56));
    private const double MiB = 8.0 /* mb to MB */ / 0x10_00_00 /* MB */ * 25.0 /* window height */;
@@ -51,6 +51,7 @@ public partial class GraphWindow : Window, INotifyPropertyChanged
 
    private void Timer_Tick(object sender, EventArgs e)
    {
+      GetRouterStatus();
       var stat = Network.GetIPv4Statistics();
       double sent = (stat.BytesSent - LastTraffic.Sent) / SentMax * MiB;
       double received = (stat.BytesReceived - LastTraffic.Received) / ReceivedMax * MiB;
@@ -63,22 +64,25 @@ public partial class GraphWindow : Window, INotifyPropertyChanged
       LastTraffic = (Sent: stat.BytesSent, Received: stat.BytesReceived);
       if (Traffic.Count >= Period)
          Traffic.RemoveAt(0);
+   }
 
+   private void GetRouterStatus()
+   {
       if (TimerCount == 0)
       {
          float snr = RouterStatus.GetSnr();
-         ReceivedMax = Settings.ReceivedMax;
-         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ReceivedMax)));
-         SentMax = Settings.SentMax;
          if (snr <= 2.5)
             StatusColour = DownColour;
          else if (snr <= 8)
             StatusColour = UnstableColour;
          else StatusColour = StableColour;
          PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StatusColour)));
+
+         ReceivedMax = Settings.ReceivedMax;
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ReceivedMax)));
+         SentMax = Settings.SentMax;
       }
-      TimerCount++;
-      if (TimerCount > 3) TimerCount = 0;
+      TimerCount = TimerCount > 3 ? 0 : TimerCount + 1;
    }
 
    private void Window_PointerPressed(object sender, PointerPressedEventArgs e)
