@@ -26,8 +26,8 @@ public partial class GraphWindow : Window, INotifyPropertyChanged
    public (long Sent, long Received) LastTraffic { get; set; }
    public NetworkInterface Network { get; set; }
 
-   private readonly SolidColorBrush DownColour = new(Color.FromArgb(200, 220, 38, 38));
-   private readonly SolidColorBrush UnstableColour = new(Color.FromArgb(150, 250, 204, 21));
+   private readonly SolidColorBrush DownColour = new(Color.FromArgb(230, 220, 38, 38));
+   private readonly SolidColorBrush UnstableColour = new(Color.FromArgb(200, 250, 204, 21));
    private readonly SolidColorBrush StableColour = new(Color.FromArgb(85, 85, 85, 85));
    private int TimerCount = 0;
    private SolidColorBrush StatusColour { get; set; }
