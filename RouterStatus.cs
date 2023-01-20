@@ -9,7 +9,7 @@ public class RouterStatus
 
    public static void SetSpeedSetting()
    {
-      string html = Fetch();
+      string html = Fetch().Result;
       if (html is null) return;
 
       if (int.TryParse(downStreamReg.Match(html).Groups[1].Value, out int downStream))
@@ -21,7 +21,7 @@ public class RouterStatus
 
    public static float? GetSnr()
    {
-      string html = Fetch();
+      string html = Fetch().Result;
       if (html is null) return null;
 
       if (int.TryParse(downStreamReg.Match(html).Groups[1].Value, out int downStream))
@@ -36,30 +36,23 @@ public class RouterStatus
       return 0;
    }
 
-   private static string Fetch()
+   private async static Task<string> Fetch()
    {
       using var cancelTokenSource = new CancellationTokenSource();
-      Task.Delay(500).ContinueWith(t =>
-      {
-         cancelTokenSource.Cancel();
-      });
+      cancelTokenSource.CancelAfter(200);
       using var msg = new HttpRequestMessage(HttpMethod.Get, Url);
       msg.Headers.Add("Authorization", AuthorizationHeader);
       using var client = new HttpClient();
       try
       {
-         var response = client.Send(msg, cancelTokenSource.Token);
-         if (!response.IsSuccessStatusCode) return null;
-         using var content = response.Content;
-         return content.ReadAsStringAsync().Result;
+         using var response = client.Send(msg, cancelTokenSource.Token);
+         if (response.IsSuccessStatusCode)
+            return await response.Content.ReadAsStringAsync();
+         return null;
       }
       catch (TaskCanceledException ex)
       {
          return null;
-      }
-      finally
-      {
-         cancelTokenSource.Dispose();
       }
    }
 }
