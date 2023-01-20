@@ -22,6 +22,13 @@ public class RouterStatus
    public static float GetSnr()
    {
       string html = Fetch();
+      if (html is null) return 0;
+
+      if (int.TryParse(downStreamReg.Match(html).Groups[1].Value, out int downStream))
+         Settings.ReceivedMax = Math.Round(downStream / 1024.0, 1);
+
+      if (int.TryParse(upStreamReg.Match(html).Groups[1].Value, out int upStream))
+         Settings.SentMax = Math.Round(upStream / 1024.0, 1);
 
       if (float.TryParse(snrReg.Match(html).Groups[1].Value, out float snr))
          return snr;

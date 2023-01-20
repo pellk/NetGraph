@@ -67,6 +67,9 @@ public partial class GraphWindow : Window, INotifyPropertyChanged
       if (TimerCount == 0)
       {
          float snr = RouterStatus.GetSnr();
+         ReceivedMax = Settings.ReceivedMax;
+         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ReceivedMax)));
+         SentMax = Settings.SentMax;
          if (snr <= 2.5)
             StatusColour = DownColour;
          else if (snr <= 8)

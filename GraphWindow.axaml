@@ -4,21 +4,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:NetGraph" mc:Ignorable="d" Title="Overlay Timer" SizeToContent="WidthAndHeight" Topmost="True" Background="Transparent" TransparencyLevelHint="Transparent" WindowStartupLocation="CenterScreen" HasSystemDecorations="False" ShowInTaskbar="False" PointerPressed="Window_PointerPressed" PointerReleased="Window_PointerReleased" PointerMoved="Window_PointerMoved">
-    <Border Background="#BB000000" Grid.Row="1" Height="25" Width="25" BorderBrush="{Binding StatusColour, Mode=OneWay}" BorderThickness="1" CornerRadius="2">
-        <ItemsControl Items="{Binding Traffic}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Width="1">
-                        <Border Height="{Binding Difference}" Background="{Binding DifferenceColour}" />
-                        <Border Height="{Binding Overlap}" Background="#FFC400" />
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+    <Border Background="#BB000000" Grid.Row="1" Height="25" Width="25" BorderBrush="{Binding StatusColour}" BorderThickness="1" CornerRadius="2">
+        <Grid ColumnDefinitions="*" RowDefinitions="*">
+            <ItemsControl Items="{Binding Traffic}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Width="1">
+                            <Border Height="{Binding Difference}" Background="{Binding DifferenceColour}" />
+                            <Border Height="{Binding Overlap}" Background="#FFC400" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock Text="{Binding ReceivedMax}" FontSize="8" Foreground="#AAFFFFFF"></TextBlock>
+        </Grid>
     </Border>
 </Window>
