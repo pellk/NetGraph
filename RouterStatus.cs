@@ -19,10 +19,10 @@ public class RouterStatus
          Settings.SentMax = Math.Round(upStream / 1024.0, 1);
    }
 
-   public static float GetSnr()
+   public static float? GetSnr()
    {
       string html = Fetch();
-      if (html is null) return 0;
+      if (html is null) return null;
 
       if (int.TryParse(downStreamReg.Match(html).Groups[1].Value, out int downStream))
          Settings.ReceivedMax = Math.Round(downStream / 1024.0, 1);
@@ -38,12 +38,28 @@ public class RouterStatus
 
    private static string Fetch()
    {
+      using var cancelTokenSource = new CancellationTokenSource();
+      Task.Delay(500).ContinueWith(t =>
+      {
+         cancelTokenSource.Cancel();
+      });
       using var msg = new HttpRequestMessage(HttpMethod.Get, Url);
       msg.Headers.Add("Authorization", AuthorizationHeader);
       using var client = new HttpClient();
-      using var response = client.Send(msg);
-      if (!response.IsSuccessStatusCode) return null;
-      using var content = response.Content;
-      return content.ReadAsStringAsync().Result;
+      try
+      {
+         var response = client.Send(msg, cancelTokenSource.Token);
+         if (!response.IsSuccessStatusCode) return null;
+         using var content = response.Content;
+         return content.ReadAsStringAsync().Result;
+      }
+      catch (TaskCanceledException ex)
+      {
+         return null;
+      }
+      finally
+      {
+         cancelTokenSource.Dispose();
+      }
    }
 }

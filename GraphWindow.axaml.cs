@@ -70,12 +70,13 @@ public partial class GraphWindow : Window, INotifyPropertyChanged
    {
       if (TimerCount == 0)
       {
-         float snr = RouterStatus.GetSnr();
-         if (snr <= 2.5)
-            StatusColour = DownColour;
-         else if (snr <= 8)
+         float? snr = RouterStatus.GetSnr();
+         if (!snr.HasValue || snr > 8)
+            StatusColour = StableColour;
+         else if (snr > 2.5)
             StatusColour = UnstableColour;
-         else StatusColour = StableColour;
+         else
+            StatusColour = DownColour;
          PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StatusColour)));
 
          ReceivedMax = Settings.ReceivedMax;
