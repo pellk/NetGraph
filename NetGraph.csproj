@@ -1,29 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Version>0.1.1</Version>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove=".gitignore" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<TrimmerRootDescriptor Include="Roots.xml" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Avalonia" Version="0.10.18"/>
-		<PackageReference Include="Avalonia.Desktop" Version="0.10.18"/>
+		<PackageReference Include="Avalonia" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.18" />
-		<PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-		<None Update="settings.ini" CopyToOutputDirectory="PreserveNewest"/>
+		<None Update="settings.ini" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 </Project>
