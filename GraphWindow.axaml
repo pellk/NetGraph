@@ -14,14 +14,11 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Width="1">
-                            <Border Height="{Binding Difference}" Background="{Binding DifferenceColour}" />
-                            <Border Height="{Binding Overlap}" Background="#FFC400" />
-                        </StackPanel>
+                        <Border Width="2" Height="14" Background="{Binding}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock Text="{Binding ReceivedMax}" FontSize="8" Foreground="#AAFFFFFF" Margin="1,0"></TextBlock>
+            <TextBlock Text="{Binding ReceivedMax}" FontSize="10" FontWeight="Bold" VerticalAlignment="Center" Foreground="#88FFFFFF" Margin="1,0"></TextBlock>
         </Grid>
     </Border>
 </Window>
