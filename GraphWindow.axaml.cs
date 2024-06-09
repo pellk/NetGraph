@@ -19,7 +19,7 @@ public partial class GraphWindow : Window, INotifyPropertyChanged
 	private const int Period = 15;
 	private bool Dragging { get; set; }
 	private DispatcherTimer Timer;
-	private ObservableCollection<SolidColorBrush> Traffic { get; set; } = new();
+	private ObservableCollection<SolidColorBrush> Traffic { get; set; } = [];
 
 	public double SentMax { get; set; }
 	public double ReceivedMax { get; set; }

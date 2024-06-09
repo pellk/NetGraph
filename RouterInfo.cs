@@ -11,7 +11,7 @@ public record RouterInfo(
 
 public class Routers
 {
-	private static List<RouterInfo> _routers = new(){
+	private static readonly List<RouterInfo> _routers = [
 		new(
 			Label: "D-Link",
 			Url: "http://192.168.1.1/adslconfig.htm",
@@ -28,7 +28,7 @@ public class Routers
 			DownStreamReg: new Regex(@"(?:<th>Down Stream<\/th>\s+<td>\s+)(\d+)(?: kbps)", RegexOptions.Multiline),
 			UpStreamReg: new Regex(@"(?:<th>Up Stream<\/th>\s+<td>\s+)(\d+)(?: kbps)", RegexOptions.Multiline)
 		)
-	};
+	];
 
 	public static List<RouterInfo> List => _routers;
 }

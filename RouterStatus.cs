@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net.Sockets;
 
 public class RouterStatus
@@ -7,10 +8,10 @@ public class RouterStatus
 		string html = Fetch(router).Result;
 		if (html is null) return;
 
-		if (int.TryParse(router.DownStreamReg.Match(html).Groups[1].Value, out int downStream))
+		if (int.TryParse(router.DownStreamReg.Match(html).Groups[1].Value, CultureInfo.InvariantCulture, out int downStream))
 			Settings.ReceivedMax = Math.Round(downStream / 1024.0, 1);
 
-		if (int.TryParse(router.UpStreamReg.Match(html).Groups[1].Value, out int upStream))
+		if (int.TryParse(router.UpStreamReg.Match(html).Groups[1].Value, CultureInfo.InvariantCulture, out int upStream))
 			Settings.SentMax = Math.Round(upStream / 1024.0, 1);
 	}
 
@@ -19,13 +20,13 @@ public class RouterStatus
 		string html = Fetch(router).Result;
 		if (html is null) return null;
 
-		if (int.TryParse(router.DownStreamReg.Match(html).Groups[1].Value, out int downStream))
+		if (int.TryParse(router.DownStreamReg.Match(html).Groups[1].Value, CultureInfo.InvariantCulture, out int downStream))
 			Settings.ReceivedMax = Math.Round(downStream / 1024.0, 1);
 
-		if (int.TryParse(router.UpStreamReg.Match(html).Groups[1].Value, out int upStream))
+		if (int.TryParse(router.UpStreamReg.Match(html).Groups[1].Value, CultureInfo.InvariantCulture, out int upStream))
 			Settings.SentMax = Math.Round(upStream / 1024.0, 1);
 
-		if (float.TryParse(router.SnrReg.Match(html).Groups[1].Value, out float snr))
+		if (float.TryParse(router.SnrReg.Match(html).Groups[1].Value, CultureInfo.InvariantCulture, out float snr))
 			return snr;
 
 		return 0;
