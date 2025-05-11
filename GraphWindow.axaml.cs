@@ -27,8 +27,9 @@ public partial class GraphWindow : Window, INotifyPropertyChanged
 	public NetworkInterface Network { get; set; }
 	public RouterInfo Router { get; set; }
 
-	private readonly SolidColorBrush DownColour = new(Color.FromArgb(230, 220, 38, 38));
-	private readonly SolidColorBrush UnstableColour = new(Color.FromArgb(200, 250, 204, 21));
+	private readonly SolidColorBrush DownColour = new(Color.FromArgb(180, 220, 38, 38));
+	private readonly SolidColorBrush WeakColour = new(Color.FromArgb(180, 250, 143, 21));
+	private readonly SolidColorBrush UnstableColour = new(Color.FromArgb(120, 250, 204, 21));
 	private readonly SolidColorBrush StableColour = new(Color.FromArgb(85, 85, 85, 85));
 	private int TimerCount = 0;
 	private SolidColorBrush StatusColour { get; set; }
@@ -68,10 +69,12 @@ public partial class GraphWindow : Window, INotifyPropertyChanged
 		if (TimerCount == 0)
 		{
 			float? snr = RouterStatus.GetSnr(Router);
-			if (!snr.HasValue || snr > 6)
+			if (!snr.HasValue || snr >= 8)
 				StatusColour = StableColour;
-			else if (snr > 2.5)
+			else if (snr > 5)
 				StatusColour = UnstableColour;
+			else if (snr > 2)
+				StatusColour = WeakColour;
 			else
 				StatusColour = DownColour;
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(StatusColour)));
